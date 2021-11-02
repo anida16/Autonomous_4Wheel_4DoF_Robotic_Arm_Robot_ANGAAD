@@ -247,7 +247,7 @@ def pick_up():
         time.sleep(0.05)
         pos_servo0=i
          
-    for i in range(0,8,1):
+    for i in range(0,7,1):
         myKit.servo[1].angle=i+pos_servo1
         #print("clockwise 1")
         #print(i)
@@ -256,7 +256,7 @@ def pick_up():
 
     time.sleep(0.5)
 
-    for i in range(0,9,1):
+    for i in range(0,8,1):
         myKit.servo[2].angle=i+pos_servo2
         #print("clockwise 1")
         #print(i)
@@ -573,6 +573,8 @@ if __name__=="__main__":
         #print("StopBot = ",stopBot)
 
         print("Control Send = %i, Pick = %i, StopBot = %i" %(controlSend, pick, stopBot))
+        if (top != 0):
+            print("xmin = %i, ymin = %i, xmax = %i, ymax = %i"%(left, top, right, bottom))
 
         if (stopBot == 1 and pick == 0):
             #thread2.start()
@@ -582,6 +584,7 @@ if __name__=="__main__":
             stoptimer=0
             stopfunction=0
             lock_on()
+            
             stoptimer=1
             if(stop_arm==1):
                 stop_arm=0
@@ -610,7 +613,7 @@ if __name__=="__main__":
             time.sleep(0.05)
             
 
-        elif (top>1 and pick==0):
+        elif (bottom>100 and pick==0):
             print("SEnddddd Function0000000")
             GPIO.output(13,False)
             run=0

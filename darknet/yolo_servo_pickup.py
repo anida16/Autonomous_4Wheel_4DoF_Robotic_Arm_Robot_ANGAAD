@@ -164,8 +164,9 @@ def lock_on():
         #cv2.circle(img, (cx,cy) , 5, (255, 0, 0), 3) #Centre of Joy's (object)
         #cv2.circle(img, Point_center , 5, (255, 0, 0), 3) #Centre of Object
         #cv2.circle(img, (320,180) , 5, (0, 255, 0), 3) #Centre of Camera
-
-        print("Camera Centre is (320,180).........Object Centre is (%i, %i) "%(cx, cy))
+        if (cx != 0):
+            print("Camera Centre is (320,180).........Object Centre is (%i, %i) "%(cx, cy))
+        
         if(toplock!=top or bottomlock!=bottom or rightlock!=right or leftlock!=left):
             if(cx>325): #645 for 720p #325 for 360p
                 if(pos_servo3>0):
@@ -179,13 +180,13 @@ def lock_on():
                     myKit.servo[3].angle=pos_servo3
                     time.sleep(0.2)
 
-            if(cy>230): #365 for 720p #185 for 360p
+            if(cy>225): #365 for 720p #185 for 360p
                 if(pos_servo1>0):
                     pos_servo1=pos_servo1-1
                     myKit.servo[1].angle=pos_servo1
                     time.sleep(0.2)
 
-            elif(cy<220): #355 for 720p #175 for 360p
+            elif(cy<215): #355 for 720p #175 for 360p
                 if(pos_servo1<90):
                     pos_servo1=pos_servo1+1
                     myKit.servo[1].angle=pos_servo1
@@ -210,7 +211,7 @@ def lock_on():
                 myKit.servo[2].angle=pos_servo2
                 time.sleep(0.2)
 
-            elif(item=="Redbox" and area>=58000 and (x_error < 30) and (y_error < 20)):
+            elif(item=="Redbox" and area>=65000 and (x_error < 30) and (y_error < 20)):
                 print("Starting Claw Motor Now")
                 stop_arm=1
                 stoptimer=1
@@ -411,7 +412,7 @@ def object_detection():
         detections = darknet.detect_image(network, class_names, darknet_image, thresh=0.45)                                                                             
         img, left, top, right, bottom, item = cvDrawBoxes(detections, frame_resized)              
         img = cv2.cvtColor(img , cv2.COLOR_BGR2RGB)
-        img = cv2.circle(img, (320,225) , 5, (0, 255, 0), 3)
+        img = cv2.circle(img, (320,220) , 5, (0, 255, 0), 3)
         #print(1/(time.time()-prev_time))
         cv2.imshow('detCam',img)                                  
         cv2.waitKey(3)
@@ -492,11 +493,11 @@ if __name__=="__main__":
     time.sleep(1)
     #thread1 = threading.Thread(target=main1)
     thread2 = threading.Thread(target=object_detection)
-    thread3 = threading.Thread(target=timeexceed)
+    #thread3 = threading.Thread(target=timeexceed)
     #thread2 = threading.Thread(target=servo_run)
     #thread1.start()
     thread2.start()
-    thread3.start()
+    #thread3.start()
     servo_run()
     servo_initialize()
     while True:

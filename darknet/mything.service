@@ -1,0 +1,12 @@
+[Unit]
+Description=mything: do my own thing
+After=graphical.target
+
+[Service]
+ExecStart=/usr/local/bin/mything.sh
+Restart=always
+StartLimitInterval=10
+RestartSec=10
+
+[Install]
+WantedBy=graphical.target

@@ -163,7 +163,7 @@ def lock_on():
 
         #cv2.circle(img, (cx,cy) , 5, (255, 0, 0), 3) #Centre of Joy's (object)
         #cv2.circle(img, Point_center , 5, (255, 0, 0), 3) #Centre of Object
-        cv2.circle(img, (320,180) , 5, (255, 255, 0), 3) #Centre of Camera
+        #cv2.circle(img, (320,180) , 5, (0, 255, 0), 3) #Centre of Camera
 
         print("Camera Centre is (320,180).........Object Centre is (%i, %i) "%(cx, cy))
         if(toplock!=top or bottomlock!=bottom or rightlock!=right or leftlock!=left):
@@ -179,20 +179,20 @@ def lock_on():
                     myKit.servo[3].angle=pos_servo3
                     time.sleep(0.2)
 
-            if(cy>185): #365 for 720p #185 for 360p
+            if(cy>230): #365 for 720p #185 for 360p
                 if(pos_servo1>0):
                     pos_servo1=pos_servo1-1
                     myKit.servo[1].angle=pos_servo1
                     time.sleep(0.2)
 
-            elif(cy<175): #355 for 720p #175 for 360p
+            elif(cy<220): #355 for 720p #175 for 360p
                 if(pos_servo1<90):
                     pos_servo1=pos_servo1+1
                     myKit.servo[1].angle=pos_servo1
                     time.sleep(0.2)
 
             x_error = abs(320 - cx)
-            y_error = abs(180 - cy)
+            y_error = abs(230 - cy)
 
             area=w*h
 
@@ -203,14 +203,14 @@ def lock_on():
 
             #if length_of_Diagonal_box > 
 
-            if(area<60000): #180000 for 720p 90000 for 360p
+            if(area<58000): #180000 for 720p 90000 for 360p
                 pos_servo1=pos_servo1+1
                 myKit.servo[1].angle=pos_servo1
                 pos_servo2=pos_servo2+1
                 myKit.servo[2].angle=pos_servo2
                 time.sleep(0.2)
 
-            elif(item=="Redbox" and area>=60000 and (x_error < 30) and (y_error < 10)):
+            elif(item=="Redbox" and area>=58000 and (x_error < 30) and (y_error < 20)):
                 print("Starting Claw Motor Now")
                 stop_arm=1
                 stoptimer=1
@@ -411,6 +411,7 @@ def object_detection():
         detections = darknet.detect_image(network, class_names, darknet_image, thresh=0.45)                                                                             
         img, left, top, right, bottom, item = cvDrawBoxes(detections, frame_resized)              
         img = cv2.cvtColor(img , cv2.COLOR_BGR2RGB)
+        img = cv2.circle(img, (320,225) , 5, (0, 255, 0), 3)
         #print(1/(time.time()-prev_time))
         cv2.imshow('detCam',img)                                  
         cv2.waitKey(3)

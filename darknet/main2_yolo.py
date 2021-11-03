@@ -174,7 +174,7 @@ def lock_on():
         #cv2.circle(img, Point_center , 5, (255, 0, 0), 3) #Centre of Object
         #cv2.circle(img, (320,180) , 5, (0, 255, 0), 3) #Centre of Camera
         if (cx != 0):
-            print("Camera Centre is (320,180).........Object Centre is (%i, %i) "%(cx, cy))
+            print("Camera Centre is (320,180).......Object Centre is (%i, %i)......Area = %i "%(cx, cy, area))
     
         if(toplock!=top or bottomlock!=bottom or rightlock!=right or leftlock!=left):
             if(cx>325): #645 for 720p #325 for 360p
@@ -206,7 +206,7 @@ def lock_on():
 
             area=w*h
 
-            print("Area = %i"% (area))
+            #print("Area = %i"% (area))
 
             #length_of_Diagonal_box = np.sqrt((w)**2 +(h)**2 )
             #print("Length of Diagonal = %i"%(length_of_Diagonal_box))
@@ -247,7 +247,7 @@ def pick_up():
         time.sleep(0.05)
         pos_servo0=i
          
-    for i in range(0,7,1):
+    for i in range(0,8,1):
         myKit.servo[1].angle=i+pos_servo1
         #print("clockwise 1")
         #print(i)

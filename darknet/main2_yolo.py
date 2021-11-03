@@ -173,8 +173,7 @@ def lock_on():
         #cv2.circle(img, (cx,cy) , 5, (255, 0, 0), 3) #Centre of Joy's (object)
         #cv2.circle(img, Point_center , 5, (255, 0, 0), 3) #Centre of Object
         #cv2.circle(img, (320,180) , 5, (0, 255, 0), 3) #Centre of Camera
-        if (cx != 0):
-            print("Camera Centre is (320,180).......Object Centre is (%i, %i)......Area = %i "%(cx, cy, area))
+        
     
         if(toplock!=top or bottomlock!=bottom or rightlock!=right or leftlock!=left):
             if(cx>325): #645 for 720p #325 for 360p
@@ -205,6 +204,9 @@ def lock_on():
             y_error = abs(230 - cy)
 
             area=w*h
+            
+            if (cx != 0):
+                print("Camera Centre is (320,180).......Object Centre is (%i, %i)......Area = %i "%(cx, cy, area))
 
             #print("Area = %i"% (area))
 

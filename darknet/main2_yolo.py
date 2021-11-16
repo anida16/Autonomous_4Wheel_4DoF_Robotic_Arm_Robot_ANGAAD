@@ -136,12 +136,14 @@ def lock_on():
     global stopfunction
     global stoptimer
     global stop_arm 
+    global img
     toplock = 0
     bottomlock = 0
     rightlock = 0
     leftlock = 0
     stop_arm = 0
     count = 0
+    
     myKit=ServoKit(channels=16)
     while (stop_arm == 0): 
         
@@ -152,12 +154,12 @@ def lock_on():
         print("Lock on Running, Stop Fn = %i"%(stopfunction))
         #print("stop fn = ",stopfunction)
         #print("lock on running")
-        print(item,top,left,bottom,right)
+        #print(item,top,left,bottom,right)
 
         cx=0 #x co-ordinate of centroid of Redbox 
         cy=0  #y co-ordinate of centroid of Redbox
-        w=0 #width of object
-        h=0 #height of object
+        w=0 #width of Redbox
+        h=0 #height of Redbox
         area=0
 
         w=right-left
@@ -166,48 +168,65 @@ def lock_on():
         cx=left+w/2
         cy=top+h/2
 
-        Point_center = (int((left + right)/2), int((top+ bottom)/2))
+        #Point_center = (int((left + right)/2), int((top+ bottom)/2))
 
-        cv2.circle(img, (cx,cy) , 5, (255, 0, 0), 3) #Centre of Joy's (object)
-        cv2.circle(img, Point_center , 5, (255, 0, 0), 3) #Centre of Object
-        cv2.circle(img, (640,360) , 5, (255, 255, 0), 3) #Centre of Camera
-
-        print("Object Centre is (%i, %i) "%(cx, cy))
+        #cv2.circle(img, (cx,cy) , 5, (255, 0, 0), 3) #Centre of Joy's (object)
+        #cv2.circle(img, Point_center , 5, (255, 0, 0), 3) #Centre of Object
+        #cv2.circle(img, (320,180) , 5, (0, 255, 0), 3) #Centre of Camera
+        
+    
         if(toplock!=top or bottomlock!=bottom or rightlock!=right or leftlock!=left):
-            if(cx>645): #645 for 720p #325 for 360p
+            if(cx>325): #645 for 720p #325 for 360p
                 if(pos_servo3>0):
                     pos_servo3=pos_servo3-1
                     myKit.servo[3].angle=pos_servo3
+                    time.sleep(0.2)
 
-            elif(cx<635): #635 for 720p #315 for 360p
+            elif(cx<315): #635 for 720p #315 for 360p
                 if(pos_servo3<180):
                     pos_servo3=pos_servo3+1
                     myKit.servo[3].angle=pos_servo3
+                    time.sleep(0.2)
 
-            if(cy>365): #365 for 720p #185 for 360p
+            if(cy>225): #365 for 720p #185 for 360p
                 if(pos_servo1>0):
                     pos_servo1=pos_servo1-1
                     myKit.servo[1].angle=pos_servo1
+                    time.sleep(0.2)
 
-            elif(cy<355): #355 for 720p #175 for 360p
+            elif(cy<215): #355 for 720p #175 for 360p
                 if(pos_servo1<90):
                     pos_servo1=pos_servo1+1
                     myKit.servo[1].angle=pos_servo1
+                    time.sleep(0.2)
+
+            x_error = abs(320 - cx)
+            y_error = abs(230 - cy)
 
             area=w*h
+            
+            if (cx != 0):
+                print("Camera Centre is (320,180).......Object Centre is (%i, %i)......Area = %i "%(cx, cy, area))
 
-            print(area)
+            #print("Area = %i"% (area))
 
-            if(area<180000): #180000 for 720p 90000 for 360p
+            #length_of_Diagonal_box = np.sqrt((w)**2 +(h)**2 )
+            #print("Length of Diagonal = %i"%(length_of_Diagonal_box))
+
+            #if length_of_Diagonal_box > 
+
+            if(area<58000): #180000 for 720p 90000 for 360p
                 pos_servo1=pos_servo1+1
                 myKit.servo[1].angle=pos_servo1
                 pos_servo2=pos_servo2+1
                 myKit.servo[2].angle=pos_servo2
+                time.sleep(0.2)
 
-            elif(item=="Redbox" and area>=180000):
-                    stop_arm=1
-                    stoptimer=1
-               
+            elif(item=="Redbox" and area>=64000 and (x_error < 30) and (y_error < 20)):
+                print("Starting Claw Motor Now")
+                stop_arm=1
+                stoptimer=1
+            
                 
         leftlock=left
         rightlock=right
@@ -223,14 +242,14 @@ def pick_up():
     global pos_servo3
     myKit=ServoKit(channels=16)
 
-    for i in range(0,90,2):
+    for i in range(10,80,2):
         myKit.servo[0].angle=i
         #print("clockwise 1")
         #print(i)
         time.sleep(0.05)
         pos_servo0=i
          
-    for i in range(0,7,1):
+    for i in range(0,8,1):
         myKit.servo[1].angle=i+pos_servo1
         #print("clockwise 1")
         #print(i)
@@ -239,7 +258,7 @@ def pick_up():
 
     time.sleep(0.5)
 
-    for i in range(0,6,1):
+    for i in range(0,8,1):
         myKit.servo[2].angle=i+pos_servo2
         #print("clockwise 1")
         #print(i)
@@ -247,7 +266,7 @@ def pick_up():
         pos_servo2=i+pos_servo2
     time.sleep(0.5)
     
-    for i in range(90,0,-2):
+    for i in range(80,10,-2):
         myKit.servo[0].angle=i
         #print("clockwise 1")
         #print(i)
@@ -264,7 +283,9 @@ def pick_up():
         myKit.servo[1].angle=pos_servo1
         #print("clockwise 1")
         #print(i)
-        time.sleep(0.05)
+        time.sleep(0.05)    
+
+    print("Pick Up complete")            
 
 def main1() :
     global val
@@ -282,7 +303,7 @@ def main1() :
                 
                 data = arduino.readline()
                 #if data:
-                #print(data)
+                print("Arduino data", data)
                 numbers = data.decode('utf-8')
                 arr = []
                 for word in numbers.split():
@@ -355,9 +376,9 @@ def cvDrawBoxes(detections, img):
                 cv2.rectangle(img, pt1, pt2, color, 1)
                 #print(pt1)
                 #print(pt2)
-                #Point_center = (int((xmin + xmax)/2), int((ymin + ymax)/2))
+                Point_center = (int((xmin + xmax)/2), int((ymin + ymax)/2))
                 #print("Centroid",Point_center)
-                #cv2.circle(img, Point_center, 5, color, 3)
+                cv2.circle(img, Point_center, 5, color, 3)
                 cv2.putText(img, label + " [" + confidence + "]", (pt1[0], pt1[1] - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
     
     xmax = np.reshape(xmax, (-1, 1))
@@ -365,7 +386,7 @@ def cvDrawBoxes(detections, img):
     ymin = np.reshape(ymin, (-1, 1))
     ymax = np.reshape(ymax, (-1, 1))
 
-    return img, xmin, ymin, xmax, ymax
+    return img, xmin, ymin, xmax, ymax, label
 
 netMain = None
 metaMain = None
@@ -375,7 +396,8 @@ altNames = None
 def object_detection():
 
     global metaMain, netMain, altNames
-    global item, top, bottom, left, right
+    global item, top, bottom, left, right 
+    global img
     timeStamp=time.time()
     fpsFiltered=0
 
@@ -426,12 +448,12 @@ def object_detection():
     #cap = cv2.VideoCapture(0)                                     
     #cap = cv2.VideoCapture("test2.mp4")                         
     cam = cv2.VideoCapture(0 ,cv2.CAP_V4L)
-    cam.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-    cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+    cam.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+    cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 360)
     font=cv2.FONT_HERSHEY_SIMPLEX
 
-    dispW = 1280                         
-    dispH = 720
+    dispW = 640                        
+    dispH = 360
     #print(dispH)
     #print(dispW)
     # Set out for video writer
@@ -457,8 +479,9 @@ def object_detection():
         darknet.copy_image_from_bytes(darknet_image,frame_resized.tobytes())               
 
         detections = darknet.detect_image(network, class_names, darknet_image, thresh=0.45)                                                                             
-        img, left, top, right, bottom = cvDrawBoxes(detections, frame_resized)              
+        img, left, top, right, bottom, item = cvDrawBoxes(detections, frame_resized)              
         img = cv2.cvtColor(img , cv2.COLOR_BGR2RGB)
+        img = cv2.circle(img, (320,220) , 5, (0, 255, 0), 3)
         #print(1/(time.time()-prev_time))
         cv2.imshow('detCam',img)                                  
         cv2.waitKey(3)
@@ -467,57 +490,6 @@ def object_detection():
     #out.release()
     print(":::Video Write Completed")
 
-    '''
-    net=jetson.inference.detectNet(argv=["--model=/home/jetbot/Downloads/jetson-inference/python/training/detection/ssd/models/myModel/ssd-mobilenet.onnx", "--labels=/home/jetbot/Downloads/jetson-inference/python/training/detection/ssd/models/myModel/labels.txt", "--input-blob=input_0", "--output-cvg=scores", "--output-bbox=boxes"], threshold=0.5)
-    dispW=1280
-    dispH=720
-    flip=2
-
-    font=cv2.FONT_HERSHEY_SIMPLEX
-    cam=jetson.utils.gstCamera(dispW,dispH,'/dev/video0')
-    display=jetson.utils.glDisplay()
-
-    cam=cv2.VideoCapture('/dev/video0')
-    cam.set(cv2.CAP_PROP_FRAME_WIDTH, dispW)
-    cam.set(cv2.CAP_PROP_FRAME_HEIGHT, dispH)
-    while display.IsOpen():
-        img,width,height=cam.CaptureRGBA()
-    while True:
-        _,img = cam.read()
-        height=img.shape[0]
-        width=img.shape[1]
-
-        frame=cv2.cvtColor(img,cv2.COLOR_BGR2RGBA).astype(np.float32)
-        frame=jetson.utils.cudaFromNumpy(frame)
-
-        detections=net.Detect(frame,width,height)
-        for detect in detections:
-            #print(detect)
-            ID=detect.ClassID
-            top=int(detect.Top)
-            left=int(detect.Left)
-            bottom=int(detect.Bottom)
-            right=int(detect.Right)
-            item=net.GetClassDesc(ID)
-            print("object detection: ",item,top)
-            #time.sleep(1)
-            cv2.rectangle(img,(left,top),(right,bottom),(255,0,0),2)
-            cv2.putText(img,item,(left,top+20),font,.75,(0,0,255),2)
-        display.RenderOnce(frame,width,height)
-        dt=time.time()-timeStamp
-        timeStamp=time.time()
-        fps=1/dt
-        fpsFiltered=0.9*fpsFiltered+.1*fps
-        #print(str(round(fps,1))+' fps')
-
-        cv2.putText(img,str(round(fpsFiltered,1))+' fps',(0,30),font,1,(0,0,255),2)
-        cv2.imshow('detCam',img)
-        cv2.moveWindow('detCam',0,0)
-        if cv2.waitKey(1)==ord('q'):
-            break
-    cam.release()
-    cv2.destroyAllWindows()
-    '''
 
 
 def servo_place():
@@ -572,7 +544,7 @@ def timeexceed():
             print("*********timer running*******")
             time.sleep(1)
             timecount=timecount+1
-            if(timecount>=60):
+            if(timecount>=120):
                 stoptimer=1
                 stopfunction=1
 def check_top():
@@ -603,6 +575,8 @@ if __name__=="__main__":
         #print("StopBot = ",stopBot)
 
         print("Control Send = %i, Pick = %i, StopBot = %i" %(controlSend, pick, stopBot))
+        if (top != 0):
+            print("xmin = %i, ymin = %i, xmax = %i, ymax = %i"%(left, top, right, bottom))
 
         if (stopBot == 1 and pick == 0):
             #thread2.start()
@@ -612,6 +586,7 @@ if __name__=="__main__":
             stoptimer=0
             stopfunction=0
             lock_on()
+            
             stoptimer=1
             if(stop_arm==1):
                 stop_arm=0
@@ -640,7 +615,7 @@ if __name__=="__main__":
             time.sleep(0.05)
             
 
-        elif (top>100 and pick==0):
+        elif (bottom>100 and pick==0):
             print("SEnddddd Function0000000")
             GPIO.output(13,False)
             run=0

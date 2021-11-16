@@ -1,5 +1,5 @@
 classes = 1
 train = data/train.txt
 valid = data/test.txt
-names = data/obj_Redbox.names
+names = /home/jetbot/Desktop/Autonomous_4Wheel_4DoF_Robotic_Arm_Robot_ANGAAD/darknet/data/obj_Redbox.names
 backup = /mydrive/yolov4tiny/backup

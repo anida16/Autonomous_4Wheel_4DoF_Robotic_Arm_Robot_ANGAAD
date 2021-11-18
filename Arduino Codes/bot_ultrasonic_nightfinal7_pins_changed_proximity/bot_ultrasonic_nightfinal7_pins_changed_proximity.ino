@@ -15,14 +15,16 @@ int valk = 0;
 
 long duration; // variable for the duration of sound wave travel
 int distance; // variable for the distance measurement
-long duration1; // variable for the duration of sound wave travel
-int distance1; // variable for the distance measurement
-long distance1_filter;
+//long duration1; // variable for the duration of sound wave travel
+//int distance1; // variable for the distance measurement
+//long distance1_filter;
 
 #define echoPin 48 // attach pin D43 Arduino to pin Echo of HC-SR04
 #define trigPin 46 //attach pin D44 Arduino to pin Trig of HC-SR04
-#define echoPin1 42 // attach pin D42 Arduino to back pin Echo of HC-SR04 //43
-#define trigPin1 44 //attach pin D44 Arduino to back pin Trig of HC-SR04 //45
+//#define echoPin1 42 // attach pin D42 Arduino to back pin Echo of HC-SR04 //43
+//#define trigPin1 44 //attach pin D44 Arduino to back pin Trig of HC-SR04 //45
+
+int proxi = 42;
 
 const int voltageSensor = A0;
 
@@ -46,6 +48,7 @@ int stopBot = 0;
 int started = 0;
 int movement = 0;
 
+/*
 void low_pass_filter ()
 {
   int smooth;
@@ -67,7 +70,7 @@ void low_pass_filter ()
     distance1_filter = smoothedValue * 100;
   }
 }
-
+*/
 void setup()
 {
   pinMode(LS, INPUT);
@@ -83,8 +86,10 @@ void setup()
   pinMode(40, INPUT); //41
   pinMode(trigPin, OUTPUT); // Front Ultrasonic
   pinMode(echoPin, INPUT); //  Front Ultrasonic
-  pinMode(trigPin1, OUTPUT); // Sets the trigPin back as an OUTPUT
-  pinMode(echoPin1, INPUT); // Sets the echoPin back as an INPUT
+  //pinMode(trigPin1, OUTPUT); // Sets the trigPin back as an OUTPUT
+  //pinMode(echoPin1, INPUT); // Sets the echoPin back as an INPUT
+
+  pinMode(proxi, INPUT);
 
   pinMode(A7, INPUT);
 
@@ -212,13 +217,13 @@ void jetsonSeq2() {
 void backwardMotion() {
 
   while (1) {
-    digitalWrite(trigPin1, LOW);
-    delayMicroseconds(2);
-    digitalWrite(trigPin1, HIGH);
-    delayMicroseconds(10);
-    digitalWrite(trigPin1, LOW);
-    duration1 = pulseIn(echoPin1, HIGH);
-    distance1 = duration1 * 0.034 / 2;
+    //    digitalWrite(trigPin1, LOW);
+    //    delayMicroseconds(2);
+    //    digitalWrite(trigPin1, HIGH);
+    //    delayMicroseconds(10);
+    //    digitalWrite(trigPin1, LOW);
+    //    duration1 = pulseIn(echoPin1, HIGH);
+    //    distance1 = duration1 * 0.034 / 2;
 
     //
     //          WARNING - COMMENT THE SECTION BELLOW BEFORE TESTING WITH JETSON
@@ -248,9 +253,9 @@ void backwardMotion() {
       delay(500);
       Blefttofront();
     }
-    low_pass_filter ();
+    //    low_pass_filter ();
 
-    if (distance1_filter < 15)    // stop
+    if (digitalRead(proxi) == 0)    // stop
     {
       stopmotor();
       Serial.println("2");
@@ -366,7 +371,7 @@ void main_code() {
       Flefttofront();
     }
 
-    if (distance < 10)    // stop //Front Ultrasonic
+    if (distance < 7)    // stop //Front Ultrasonic
     {
 
       stopmotor();

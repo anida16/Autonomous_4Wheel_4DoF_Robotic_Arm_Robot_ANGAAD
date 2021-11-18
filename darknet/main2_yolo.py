@@ -49,6 +49,9 @@ time.sleep(5)
 arduino = serial.Serial('/dev/ttyACM0', 9600, timeout=10)
 
 def servo_run():
+
+    print("Started Servo Run Code")
+
     global pos_servo0
     global pos_servo1
     global pos_servo2
@@ -84,12 +87,17 @@ def servo_run():
         # print("clockwise 0")
         # print(pos_servo1)
         time.sleep(0.05)
+    
+    print("Ended Servo Run Code")
 
 
-def servo_initialize():
-    global pos_servo0
-    global pos_servo1
-    global pos_servo2
+def servo_standard_position():
+
+    print("Started Servo Standard Position")
+
+    global pos_servo0 #claw motor
+    global pos_servo1 #arm motor
+    global pos_servo2 
     global pos_servo3
     
     myKit=ServoKit(channels=16)
@@ -122,6 +130,51 @@ def servo_initialize():
         for pos_servo1 in range(pos_servo1,30,-1):
             myKit.servo[1].angle=pos_servo1
             time.sleep(0.05)
+    
+    print("Ended Servo Standard Position")
+
+
+def servo_initialize():
+
+    print("Started Servo Initizalise Code")
+
+    global pos_servo0 #claw motor
+    global pos_servo1 #arm motor
+    global pos_servo2 
+    global pos_servo3
+    
+    myKit=ServoKit(channels=16)
+    if(pos_servo2<5):
+        for pos_servo2 in range(pos_servo2,5,1):
+            myKit.servo[2].angle=pos_servo2
+            time.sleep(0.05)
+
+    elif(pos_servo2>5):
+        for pos_servo2 in range(pos_servo2,5,-1):
+            myKit.servo[2].angle=pos_servo2
+            time.sleep(0.05)
+
+    if(pos_servo3<25):
+        for pos_servo3 in range(pos_servo3,25,1):
+            myKit.servo[3].angle=pos_servo3
+            time.sleep(0.05)
+
+    elif(pos_servo3>25):
+        for pos_servo3 in range(pos_servo3,25,-1):
+            myKit.servo[3].angle=pos_servo3
+            time.sleep(0.05)
+
+    if(pos_servo1<30):
+        for pos_servo1 in range(pos_servo1,30,1):
+            myKit.servo[1].angle=pos_servo1
+            time.sleep(0.05)
+
+    elif(pos_servo1>30):
+        for pos_servo1 in range(pos_servo1,30,-1):
+            myKit.servo[1].angle=pos_servo1
+            time.sleep(0.05)
+    
+    print("Ended Servo Initizalise Code")
 
 def lock_on():
     global item
